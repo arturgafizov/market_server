@@ -82,11 +82,9 @@ services:
   celery:
     build:
       context: .
-      dockerfile: docker/server/Dockerfile
+      dockerfile: docker/server_prod/Dockerfile
     command: celery -A source worker -l info --beat --scheduler django_celery_beat.schedulers:DatabaseScheduler
     volumes:
-      - ./app/source/:/usr/src/web/:cached
-      - ./app/source:/app
       - redis_socket:/redis_socket
     environment:
       <<: *variables
