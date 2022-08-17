@@ -2,7 +2,7 @@
 
 #### Clone the repo:
 
-    git clone git@bitbucket.org:webtronics-apps-web/backend.git 
+    git clone https://github.com/FudJiaMa/alan_back.git
     
 
 #### Before running create your superuser email/password and project name in docker/prod/env/.data.env file
