@@ -10,7 +10,7 @@ from . import settings
 
 schema_view = get_schema_view(
     openapi.Info(
-        title='RUDN - production',
+        title='ALAN - production',
         default_version='v1',
         description="Api",
     ),

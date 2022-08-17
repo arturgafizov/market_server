@@ -55,3 +55,6 @@ Thumbs.db
 venv
 .coverage
 .cache
+docker/env/.env
+*.env
+

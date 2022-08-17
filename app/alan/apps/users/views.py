@@ -65,20 +65,6 @@ class UserModelViewSet(ViewSet):
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
-class UserDepositSumViewView(ListAPIView):
-    serializer_class = serializers.UserDepositSumSerializers
-
-    def get_queryset(self):
-        queryset = User.objects.filter(id=self.request.user.id)
-        return queryset
-
-
-class SignUpView(CreateAPIView):
-    permission_classes = (AllowAny,)
-    serializer_class = serializers.UserSignUpSerializer
-
-
 class UserViewSet(GenericViewSet):
 
     def get_serializer_class(self):
@@ -152,49 +138,6 @@ class ChangePasswordConfirmView(GenericAPIView):
         )
 
 
-class VerifyEmailView(CreateAPIView):
-    permission_classes = (AllowAny,)
-    serializer_class = serializers.VerifyEmailSerializer
-
-    # @swagger_auto_schema(**schemas.signup_verify_schema)
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response({'detail': 'ok'}, status=status.HTTP_200_OK)
-
-
-class PreLoginView(GenericAPIView):
-    serializer_class = serializers.PreLoginSerializer
-    permission_classes = []
-
-    def post(self, request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        email = serializer.validated_data['login']
-        request.session['email'] = email
-        serializer.save()
-        return Response(
-            {'detail': _('We have sent email with code to your number, code will be expired 20 minutes')},
-            status=status.HTTP_200_OK,
-        )
-
-# class PreLoginView(GenericAPIView):
-#     serializer_class = serializers.PreLoginSerializer
-#     permission_classes = []
-#
-#     def post(self, request):
-#         serializer = self.get_serializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         serializer.save()
-#         email = serializer.validated_data['login']
-#         request.session['email'] = email
-#         print(email)
-#         user = AuthAppService.get_user(email)
-#         ControlsService.make_session(request, user)
-#         return Response(get_tokens_for_user(user), status=status.HTTP_200_OK)
-
-
 class LoginView(GenericAPIView):
     serializer_class = serializers.LoginSerializer
     permission_classes = []
@@ -202,24 +145,11 @@ class LoginView(GenericAPIView):
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data
-        return Response(get_tokens_for_user(user), status=status.HTTP_200_OK)
-
-
-class LogoutView(auth_views.LogoutView):
-    allowed_methods = ('POST', 'OPTIONS')
-
-    def post(self, request, *args, **kwargs):
-        user = request.user
-        return self.logout(request)
-
-    def session_logout(self):
-        django_logout(self.request)
-
-    def logout(self, request):
-        self.session_logout()
-        response = full_logout(request)
-        return response
+        email = serializer.validated_data['login']
+        user = User.objects.get(email=email)
+        return (
+            Response(get_tokens_for_user(user), status=status.HTTP_200_OK)
+        )
 
 
 class CurrentUserView(APIView):
@@ -228,5 +158,3 @@ class CurrentUserView(APIView):
         user = request.user
         serializer = serializers.CurrentUserSerializers(user)
         return Response(serializer.data)
-
-

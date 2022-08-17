@@ -1,5 +1,4 @@
 from django.utils.translation import gettext_lazy as _
-from decouple import config
 from datetime import timedelta
 from os import environ
 import os
@@ -37,7 +36,7 @@ EMAIL_USE_TLS = int(os.environ.get("EMAIL_USE_TLS", 1))
 # Available choice: console, smtp, locmem, etc..
 EMAIL_BACKEND = 'django.core.mail.backends.{0}.EmailBackend'.format(environ.get('EMAIL_BACKEND', 'smtp'))
 
-MICROSERVICE_TITLE = os.environ.get('RUDN')
+MICROSERVICE_TITLE = os.environ.get('ALAN')
 
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -83,8 +82,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    # Imported
-    'apps.users.middleware.UserTimeTrackingMiddleware',
 ]
 
 ROOT_URLCONF = 'source.urls'

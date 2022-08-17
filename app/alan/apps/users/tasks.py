@@ -8,6 +8,8 @@ from django.utils.translation import activate
 from .decorators import smtp_shell
 from source.celery import app
 
+from .generators import cleaning_expired_codes
+
 
 @app.task(name='email.send_information_email')
 def send_information_email(

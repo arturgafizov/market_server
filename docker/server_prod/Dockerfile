@@ -2,8 +2,11 @@ FROM python:3.9.9-alpine3.13 as builder
 
 RUN apk update && \
     apk add --no-cache build-base postgresql-dev gcc python3-dev musl-dev openssl libffi-dev openssl-dev \
+    py3-pip pango-dev zlib-dev jpeg-dev openjpeg-dev cairo-dev g++ gdk-pixbuf-dev msttcorefonts-installer fontconfig \
     # install Pillow dependencies
     jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev harfbuzz-dev fribidi-dev
+
+RUN update-ms-fonts
 
 ARG TEMP_PATH=/usr/src/web
 
@@ -29,7 +32,8 @@ ARG USER=ubuntu
 
 RUN apk update && \
     apk add --no-cache postgresql-dev curl \
-    jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev harfbuzz-dev fribidi-dev && \
+    jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev harfbuzz-dev fribidi-dev \
+    py3-pip pango-dev zlib-dev jpeg-dev openjpeg-dev cairo-dev g++ gdk-pixbuf-dev msttcorefonts-installer fontconfig && \
     addgroup -g $GID -S $USER && \
     adduser -S $USER -G $USER --disabled-password --uid "$UID" && \
     mkdir -p /gunicorn_socket /redis_socket && \
@@ -37,11 +41,11 @@ RUN apk update && \
     chown -R $USER:$USER /gunicorn_socket
 
 WORKDIR $APP_HOME
-
+RUN update-ms-fonts
 
 COPY --from=builder /install /usr/local
 COPY --chown=$USER:$USER ./docker/server_prod/entrypoint.sh /
-COPY --chown=$USER:$USER ./app/rudn/ $APP_HOME
+COPY --chown=$USER:$USER ./app/alan/ $APP_HOME
 
 RUN chmod +x /*.sh && \
     mkdir -p static media  && \

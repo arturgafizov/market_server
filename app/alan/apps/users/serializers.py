@@ -254,11 +254,7 @@ class ChangePasswordConfirmSerializer(serializers.Serializer):
         self.user.save()
 
 
-class VerifyEmailSerializer(serializers.Serializer):
-    key = serializers.CharField()
-
-
-class PreLoginSerializer(serializers.Serializer):
+class LoginSerializer(serializers.Serializer):
     login = serializers.CharField(max_length=128)
     password = serializers.CharField(max_length=128)
 
@@ -273,34 +269,6 @@ class PreLoginSerializer(serializers.Serializer):
     def authenticate(self, **kwargs):
         back = EmailBackend()
         return back.authenticate(**kwargs)
-
-    def save(self, **kwargs):
-        code = gen_security_code()
-        print(code)
-        IdentificationCode.objects.create(user=self.user, code=code)
-        AuthAppService.send_security_code_email(self.user, code)
-
-
-class LoginSerializer(serializers.Serializer):
-    code = serializers.CharField()
-    email = serializers.EmailField()
-
-    def validate(self, attrs: dict):
-        try:
-            ident_code = IdentificationCode.objects.get(user__email=attrs['email'], code=attrs['code'])
-        except IdentificationCode.DoesNotExist:
-            raise serializers.ValidationError({'Error': _("The code is invalid")})
-
-        if not ident_code.active:
-            raise serializers.ValidationError({'Error': _("The code is not active")})
-
-        code_lifetime = ident_code.time_created + timedelta(minutes=20)
-        if code_lifetime < now():
-            raise serializers.ValidationError({'Error': _("The code is expired")})
-
-        ident_code.active = False
-        ident_code.save()
-        return ident_code.user
 
 
 class UserDepositSumSerializers(serializers.ModelSerializer):
