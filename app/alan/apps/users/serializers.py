@@ -36,8 +36,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'keyword', 'email', 'username', 'available_usdt', 'in_orders_usdt',
-                  'available_swht', 'in_deposit_swht', 'available_btc')
+        fields = ('first_name', 'last_name', 'email', 'username')
 
     def update(self, instance, validated_data):
         raise_errors_on_nested_writes('update', self, validated_data)
