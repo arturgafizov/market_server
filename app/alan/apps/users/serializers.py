@@ -54,46 +54,6 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
 
 
-class UserSignUpSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(min_length=2, max_length=100, required=True)
-    password1 = serializers.CharField(write_only=True, min_length=8)
-    password2 = serializers.CharField(write_only=True, min_length=8)
-    keyword = serializers.CharField(write_only=True, min_length=4)
-
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'email', 'password1', 'password2', 'keyword')
-
-    def validate_password1(self, password: str) -> str:
-        validate_password(password)
-        return password
-
-    def validate_email(self, email) -> str:
-        status, msg = AuthAppService.validate_email(email)
-        if not status:
-            raise serializers.ValidationError(msg)
-        if email and email_address_exists(email):
-            raise serializers.ValidationError(_("User is already registered with this e-mail address."))
-        return email
-
-    def validate(self, data):
-        if data['password1'] != data['password2']:
-            raise serializers.ValidationError({'password2': _("The two password fields didn't match.")})
-        username = data['username']
-        if User.objects.filter(username=username).exists():
-            raise serializers.ValidationError({'username': _(f'User is already exist with username - {username}')})
-        return data
-
-    def save(self):
-        request = self.context['request']
-        self.validated_data['password'] = self.validated_data.pop('password1')
-        del self.validated_data['password2']
-        user = User.objects.create_user(**self.validated_data, is_active=False)
-        setup_user_email(request=request, user=user, addresses=[])
-        UsersService.send_email_confirm(request, user)
-        return user
-
-
 class EmailChangeSerializer(serializers.ModelSerializer):
     email = serializers.CharField(max_length=128)
     repeat_email = serializers.CharField(max_length=128)
