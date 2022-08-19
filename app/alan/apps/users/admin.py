@@ -15,14 +15,14 @@ User = get_user_model()
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
     ordering = ('-id',)
-    list_display = ('email', 'full_name', 'is_active', 'username', )
-    search_fields = ('first_name', 'last_name', 'email', )
-    list_filter = ('is_active', 'is_staff')
+    list_display = ('email', 'full_name', 'is_active', 'username', 'role')
+    search_fields = ('first_name', 'last_name', 'email', 'role')
+    list_filter = ('is_active', 'is_staff', 'role')
     list_editable = ('is_active', )
     list_per_page = 20
 
     fieldsets = (
-        (_('Personal info'), {'fields': ('id', 'first_name', 'last_name', 'email', 'username', )}),
+        (_('Personal info'), {'fields': ('id', 'first_name', 'last_name', 'email', 'username', 'role')}),
         (_('Secrets'), {'fields': ('password',)}),
         (_('Permissions'), {
             'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
