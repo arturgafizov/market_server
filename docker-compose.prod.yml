@@ -71,8 +71,10 @@ services:
       - alan_network
     depends_on:
       - alan
+    env_file:
+      - docker/env/.env
     ports:
-      - '8080:80'
+      - ${PORT}80
     volumes:
       - media_data:/app/media/
       - static_data:/app/static/
