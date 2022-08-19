@@ -28,6 +28,7 @@ urlpatterns = [
     path('rosetta/', include('rosetta.urls')),
     # API
     path('api/user/', include('apps.users.urls')),
+    path('api/docs/', include('apps.docs.urls')),
 
 
 ]
