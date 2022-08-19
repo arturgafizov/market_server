@@ -14,7 +14,7 @@ services:
       <<: *variables
     env_file:
       - docker/postgres/env.env
-      - docker/env/.env
+      - .env
       - docker/env/.email.env
     depends_on:
       - db
@@ -72,9 +72,9 @@ services:
     depends_on:
       - alan
     env_file:
-      - docker/env/.env
+      - .env
     ports:
-      - ${PORT}80
+      - '${PORT}:80'
     volumes:
       - media_data:/app/media/
       - static_data:/app/static/
@@ -92,7 +92,7 @@ services:
       <<: *variables
     env_file:
       - docker/postgres/env.env
-      - docker/env/.env
+      - .env
       - docker/env/.email.env
     depends_on:
       - redis
