@@ -8,7 +8,7 @@ services:
     restart: 'always'
     env_file:
       - docker/postgres/env.env
-      - docker/env/.env
+      - .env
       - docker/env/.email.env
     environment:
       FRONTEND_SITE: 'http://localhost:8081'
@@ -71,7 +71,7 @@ services:
       - redis_socket:/redis_socket
     env_file:
       - docker/postgres/env.env
-      - docker/env/.env
+      - .env
       - docker/env/.email.env
     depends_on:
       - db
