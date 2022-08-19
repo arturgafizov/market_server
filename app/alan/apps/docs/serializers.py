@@ -21,8 +21,6 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class DocumentSerializer(serializers.ModelSerializer):
-    speciality = serializers.CharField(source='speciality.name')
-    category = serializers.CharField(source='category.name')
     file = serializers.FileField(validators=[FileExtensionValidator(['xls', 'xlsx', 'doc', 'docs', 'pdf'])])
 
     class Meta:
