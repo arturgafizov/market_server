@@ -22,3 +22,10 @@ class DocumentAdmin(admin.ModelAdmin):
     search_fields = ('speciality__name', 'category_name')
     list_per_page = 20
     readonly_fields = ('id',)
+
+
+@admin.register(Information)
+class InformationAdmin(admin.ModelAdmin):
+    list_display = ('id', 'created_at', 'name',)
+    list_per_page = 20
+    readonly_fields = ('id',)
