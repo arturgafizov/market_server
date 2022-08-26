@@ -35,7 +35,7 @@ services:
     env_file:
       - docker/postgres/env.env
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:5432"
     networks:
       - alan_network
     healthcheck:
