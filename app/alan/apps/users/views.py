@@ -1,29 +1,13 @@
 import logging
-import datetime
-from django.shortcuts import redirect
-from django.urls import reverse
-from django.views.generic import TemplateView
 from django.contrib.auth import get_user_model
-from django.contrib.auth import logout as django_logout
-from django.utils.translation import gettext_lazy as _
-from dj_rest_auth import views as auth_views
 from rest_framework.generics import ListAPIView, GenericAPIView
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from rest_framework.parsers import JSONParser, MultiPartParser
-from rest_framework_simplejwt import serializers as jwt_serializers
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.generics import CreateAPIView
-from rest_framework.permissions import AllowAny
-from django.conf import settings
 
 from . import serializers
-from .redis_handler import RedisHandler
-from .services import UsersService, full_logout, AuthAppService
 from .generators import get_tokens_for_user
-from rest_framework_simplejwt.views import TokenViewBase
-from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
 User = get_user_model()
 
@@ -64,78 +48,6 @@ class UserModelViewSet(ViewSet):
         instance = self.get_object()
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-class UserViewSet(GenericViewSet):
-
-    def get_serializer_class(self):
-        if self.action == 'change_email':
-            return serializers.EmailChangeSerializer
-        elif self.action == 'change_password':
-            return serializers.ChangePasswordSerializer
-        elif self.action == 'change_username':
-            return serializers.ChangeUsernameSerializer
-
-    def change_email(self, request):
-        serializer = self.get_serializer(request.user, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response({'detail': _('New email has been saved')})
-
-    def change_password(self, request):
-        serializer = self.get_serializer(request.user, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        request.session['new_password'] = serializer.validated_data['password1']
-        serializer.save()
-        return Response({'detail': _('To save a new password, click on the link sent to your email')})
-
-    def change_username(self, request):
-        serializer = self.get_serializer(request.user, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response({'detail': _('New username has been saved')})
-
-
-class PasswordResetTokenView(GenericAPIView):
-    serializer_class = serializers.ValidatePasswordTokenSerializer
-    permission_classes = []
-
-    def post(self, request, *args, **kwargs):
-        # Create a serializer with request.data
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        serializer.save()
-        # Return the success message with OK HTTP status
-        return Response(
-            {"detail": _("Password reset e-mail has been sent.")},
-            status=status.HTTP_200_OK
-        )
-
-
-class PasswordResetTokenConfirmView(GenericAPIView):
-    permission_classes = (AllowAny,)
-    serializer_class = serializers.SetNewPasswordSerializer
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(
-            {"detail": _("Password has been reset with the new password.")}
-        )
-
-
-class ChangePasswordConfirmView(GenericAPIView):
-    serializer_class = serializers.ChangePasswordConfirmSerializer
-    permission_classes = []
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(
-            {"detail": _("User was activated by the link when changing the password.")}
-        )
 
 
 class LoginView(GenericAPIView):

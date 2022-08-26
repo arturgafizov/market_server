@@ -19,12 +19,6 @@ urlpatterns = [
     path('', login_required(RedirectView.as_view(pattern_name='admin:index'))),
     path('current-user/', views.CurrentUserView.as_view(), name='current_user'),
     path('login/', views.LoginView.as_view(), name='api-login'),
-    path('update/email/', views.UserViewSet.as_view({'post': 'change_email'}), name='change_email'),
-    path('update/password/', views.UserViewSet.as_view({'post': 'change_password'}), name='change_password'),
-    path('update/password/confirm/', views.ChangePasswordConfirmView.as_view(), name='change_password_confirm'),
-    path('update/username/', views.UserViewSet.as_view({'post': 'change_username'}), name='change_username'),
-    path('password/reset/', views.PasswordResetTokenView.as_view(), name='forgot_password'),
-    path('password/reset/confirm/', views.PasswordResetTokenConfirmView.as_view(), name='password_reset_confirm'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 
