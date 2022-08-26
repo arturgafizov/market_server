@@ -1,8 +1,10 @@
+import os
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
+from django.utils.safestring import mark_safe
 
 from .managers import UserManager
 
@@ -18,8 +20,12 @@ class User(AbstractUser):
     )
 
     email = models.EmailField(_('Email address'), unique=True)
-    phone = PhoneNumberField(null=True, blank=True, verbose_name='Мобильный телефон')
+    phone = PhoneNumberField(unique=True, null=True, blank=True, verbose_name='Мобильный телефон')
     role = models.CharField(max_length=128, choices=ROLES, default=EMPLOYEE, verbose_name='Роль')
+    middle_name = models.CharField(max_length=32, blank=True, null=True)
+    position = models.CharField(max_length=128, null=True, blank=True, verbose_name='Должность')
+    division = models.CharField(max_length=128, null=True, blank=True, verbose_name='Подразделение')
+    photo = models.ImageField(upload_to='user_photo/', blank=True, verbose_name='Фото пользователя')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -33,8 +39,13 @@ class User(AbstractUser):
     def __str__(self):
         return self.email
 
+    @property
     def full_name(self):
-        return super().get_full_name()
+        if self.middle_name is None:
+            self.middle_name = ''
+        if self.first_name is None:
+            self.first_name = ''
+        return f'{self.last_name} {self.first_name} {self.middle_name}'.strip()
 
     def user_active_quantity(self):
         users = User.objects.all()
@@ -44,6 +55,10 @@ class User(AbstractUser):
         self.outstandingtoken_set.all().delete()
         return super().delete(**kwargs)
 
+    @property
+    def filename(self):
+        return os.path.basename(self.full_name)
+
 
 class IdentificationCode(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_('User'))
@@ -51,5 +66,3 @@ class IdentificationCode(models.Model):
     active = models.BooleanField(_('Active'), default=True)
     time_created = models.DateTimeField(auto_now_add=True, verbose_name=_('Time created'))
     objects = models.Manager()
-
-
