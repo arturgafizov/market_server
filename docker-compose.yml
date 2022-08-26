@@ -11,12 +11,12 @@ services:
       - .env
       - docker/env/.email.env
     environment:
-      FRONTEND_SITE: 'http://localhost:8081'
+      FRONTEND_SITE: 'http://localhost:8001'
     depends_on:
       - db
       - redis
     ports:
-      - '8081:8000'
+      - '8001:8000'
     volumes:
       - ./app/alan:/app
       - redis_socket:/redis_socket
