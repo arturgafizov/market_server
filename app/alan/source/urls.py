@@ -21,6 +21,7 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
+    path('api/', include('api.urls')),
     # Service
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
@@ -29,7 +30,7 @@ urlpatterns = [
     # API
     path('api/user/', include('apps.users.urls')),
     path('api/docs/', include('apps.docs.urls')),
-
+    path('api/questions/', include('apps.test_questions.urls')),
 
 ]
 
