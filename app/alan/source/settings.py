@@ -68,6 +68,7 @@ INSTALLED_APPS = [
 LOCAL_APPS = [
     'apps.users.apps.UsersConfig',
     'apps.docs.apps.DocsConfig',
+    'apps.test_questions.apps.TestQuestionsConfig',
 ]
 
 INSTALLED_APPS += LOCAL_APPS
