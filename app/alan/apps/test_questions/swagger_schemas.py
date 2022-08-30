@@ -18,3 +18,9 @@ tags_question_answer_user_list = {
     'operation_summary': 'Получение списка результатов пользователя',
     'tags': tags_question_answer_user,
 }
+
+tags_quantity_questions_answer_user_get = {
+    'operation_description': '## Получение колличества правильных и неправильных ответов конкретного теста пользователя',
+    'operation_summary': 'Получение колличества правильных и неправильных ответов',
+    'tags': tags_question_answer_user,
+}
