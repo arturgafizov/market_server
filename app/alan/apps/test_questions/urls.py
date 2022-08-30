@@ -12,5 +12,6 @@ urlpatterns = [
     path('test-result/', views.TestResultView.as_view(), name='make_test_result'),
     path('test-result/user/', views.CurrentUserTestResultView.as_view(), name='get_user_test_result'),
     path('test-question-answer/user/', views.TestQuestionAnswerView.as_view(), name='make_test_question_answer'),
+    path('test-result/get/', views.GetTestResultView.as_view(), name='get_test_result'),
     path('', include(router.urls)),
 ]
