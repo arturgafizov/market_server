@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 
 from . import swagger_schemas as schemas
 from . import serializers
-from .models import TestResult
+from .models import TestResult, TestAnswer
 from .services import TestQuestions
 
 
@@ -42,3 +42,16 @@ class TestQuestionAnswerView(GenericAPIView):
         serializer.save()
         TestQuestions.get_test_result(serializer.data)
         return Response({'detail': True}, status=status.HTTP_200_OK)
+
+
+class GetTestResultView(GenericAPIView):
+    permission_classes = []
+    serializer_class = serializers.GetTestResultSerializer
+
+    @method_decorator(name='get', decorator=swagger_auto_schema(**schemas.tags_quantity_questions_answer_user_get, ))
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        test_result = TestResult.objects.get(id=serializer.data['test_result_id'])
+        res = TestQuestions.get_user_test_result(test_result.id)
+        return Response({'detail': res}, status=status.HTTP_200_OK)
