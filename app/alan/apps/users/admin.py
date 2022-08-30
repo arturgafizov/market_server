@@ -8,8 +8,14 @@ from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.token_blacklist.admin import OutstandingTokenAdmin
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
 
+from .models import IdentificationCode
 
 User = get_user_model()
+
+
+class IdentificationCodeInline(admin.TabularInline):
+    model = IdentificationCode
+    extra = 0
 
 
 @admin.register(User)
@@ -20,7 +26,7 @@ class CustomUserAdmin(UserAdmin):
     list_filter = ('is_active', 'is_staff', 'role', 'division', 'position')
     list_editable = ('is_active', )
     list_per_page = 20
-
+    inlines = [IdentificationCodeInline, ]
     fieldsets = (
         (_('Personal info'), {'fields': ('id', 'first_name', 'last_name', 'email', 'username', 'role', 'phone',
                                          'division', 'position', 'photo')}),
