@@ -1,5 +1,7 @@
 import logging
+from drf_yasg.utils import swagger_auto_schema
 from django.contrib.auth import get_user_model
+from django.utils.decorators import method_decorator
 from rest_framework.generics import ListAPIView, GenericAPIView
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
@@ -8,6 +10,7 @@ from rest_framework import status
 
 from . import serializers
 from .generators import get_tokens_for_user
+from . import swagger_schemas as schemas
 
 User = get_user_model()
 
@@ -70,3 +73,31 @@ class CurrentUserView(APIView):
         user = request.user
         serializer = serializers.CurrentUserSerializers(user)
         return Response(serializer.data)
+
+
+class PreLoginMobileView(GenericAPIView):
+    serializer_class = serializers.PreLoginMobileSerializer
+    permission_classes = []
+
+    @method_decorator(name='create', decorator=swagger_auto_schema(**schemas.tags_pre_login_create, ))
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return (
+            Response({'detail': 'Сообщение отправлено на ваш телефон'}, status=status.HTTP_200_OK)
+        )
+
+
+class LoginMobileView(GenericAPIView):
+    serializer_class = serializers.LoginMobileSerializer
+    permission_classes = []
+
+    @method_decorator(name='create', decorator=swagger_auto_schema(**schemas.tags_login_create, ))
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = User.objects.get(email=serializer.validated_data)
+        return (
+            Response(get_tokens_for_user(user), status=status.HTTP_200_OK)
+        )
