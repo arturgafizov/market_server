@@ -22,7 +22,14 @@ class TestQuestionAnswerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TestQuestionAnswer
-        fields = ('test_result', 'questions', 'answer', 'correct', 'created_at', )
+        fields = ('test_result', 'questions', 'answer', 'created_at', )
+
+    def create(self, validated_data):
+        answer_data = validated_data['answer']
+        user_answer_is_correct = answer_data.correct
+        new_user_answer = TestQuestionAnswer.objects.create(**validated_data, correct=user_answer_is_correct)
+
+        return new_user_answer
 
 
 class TestResultSerializer(serializers.ModelSerializer):
@@ -37,6 +44,8 @@ class TestResultSerializer(serializers.ModelSerializer):
         category = data.get('category')
         if type == TestType.THEMATIC and category is None:
             raise serializers.ValidationError('Категория обезательно назначается на тематическое вид вопросов')
+        elif type != TestType.THEMATIC and category is not None:
+            raise serializers.ValidationError('Категория назначается только на тематическое вид вопросов')
         return data
 
     def create(self, validated_data):
@@ -47,4 +56,8 @@ class TestResultSerializer(serializers.ModelSerializer):
         new_test = TestResult.objects.create(**validated_data)
         new_test.test_results.set(question_answer_data)
         return new_test
+
+
+class GetTestResultSerializer(serializers.Serializer):
+    test_result_id = serializers.IntegerField()
 
