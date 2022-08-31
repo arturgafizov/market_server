@@ -20,7 +20,7 @@ FRONTEND_SITE = os.environ.get('FRONTEND_SITE', )
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = (os.environ.get('DEBUG', True))
 
-ALLOWED_HOSTS = ['localhost', '62.84.119.43', ]
+ALLOWED_HOSTS = ['localhost', '185.117.153.245', ]
 
 SITE_ID = 1
 
