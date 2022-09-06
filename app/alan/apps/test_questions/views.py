@@ -16,7 +16,7 @@ class TestResultView(GenericAPIView):
 
     @method_decorator(name='create', decorator=swagger_auto_schema(**schemas.tags_result_create, ))
     def post(self, request):
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(data=request.data, many=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -37,7 +37,7 @@ class TestQuestionAnswerView(GenericAPIView):
 
     @method_decorator(name='create', decorator=swagger_auto_schema(**schemas.tags_question_answer_user_create, ))
     def post(self, request):
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(data=request.data, many=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         TestQuestions.get_test_result(serializer.data)
