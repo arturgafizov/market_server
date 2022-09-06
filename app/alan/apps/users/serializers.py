@@ -77,5 +77,5 @@ class CurrentUserSerializers(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email', 'username', )
+        fields = ('first_name', 'middle_name',  'last_name', 'email', 'phone', 'role', 'position', 'division')
 
