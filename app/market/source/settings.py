@@ -67,8 +67,10 @@ INSTALLED_APPS = [
 
 LOCAL_APPS = [
     'apps.users.apps.UsersConfig',
-    'apps.docs.apps.DocsConfig',
-    'apps.test_questions.apps.TestQuestionsConfig',
+    'apps.wildberries.apps.WildberriesConfig',
+    'apps.suppliers.apps.SuppliersConfig',
+    'apps.products.apps.ProductsConfig',
+    'apps.warehouses.apps.WarehousesConfig',
 ]
 
 INSTALLED_APPS += LOCAL_APPS
@@ -236,13 +238,9 @@ JWT_AUTH_RETURN_EXPIRATION = True
 CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
 CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND')
 
-
-# Api key for https://octopusapisoftware.com/  API
-OCTOPUS_API_KEY = 'C6RPZi-Q6UcASN-OQYZflg-TsoNR-s1Fka'
-
-# administrator TRON usdt address
-ADMIN_TRON_ADDRESS = 'TGHPsf5eMXgFNiLeuSfueK8xZJWahtYxrY'
 ROSETTA_SHOW_AT_ADMIN_PANEL = False
 
-
+WB_API_KEY_IE = os.environ.get('WB_API_KEY_IE')
+WB_API_KEY_OOO = os.environ.get('WB_API_KEY_OOO')
+WB_URL = 'https://suppliers-stats.wildberries.ru/'
 

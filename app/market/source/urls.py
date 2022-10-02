@@ -10,7 +10,7 @@ from . import settings
 
 schema_view = get_schema_view(
     openapi.Info(
-        title='ALAN - production',
+        title='Market-service - production',
         default_version='v1',
         description="Api",
     ),
@@ -29,8 +29,10 @@ urlpatterns = [
     path('rosetta/', include('rosetta.urls')),
     # API
     path('api/user/', include('apps.users.urls')),
-    path('api/docs/', include('apps.docs.urls')),
-    path('api/questions/', include('apps.test_questions.urls')),
+    path('api/wb/', include('apps.wildberries.urls')),
+    path('api/supplier/', include('apps.suppliers.urls')),
+    path('api/products/', include('apps.products.urls')),
+    path('api/warehouses/', include('apps.warehouses.urls')),
 
 ]
 

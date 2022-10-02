@@ -43,39 +43,9 @@ class LoginSerializer(serializers.Serializer):
         return back.authenticate(**kwargs)
 
 
-class PreLoginMobileSerializer(serializers.Serializer):
-    phone = serializers.CharField(max_length=128)
-
-    def save(self, **kwargs):
-        phone = self.validated_data['phone']
-        user = User.objects.get(phone=phone)
-        code = gen_security_code()
-        print(code)
-        IdentificationCode.objects.create(user=user, code=code)
-        smsc = SMSC()
-        smsc.send_sms(phone, code, sender="sms")
-
-
-class LoginMobileSerializer(serializers.Serializer):
-    phone = PhoneNumberField()
-    code = serializers.IntegerField()
-
-    def validate(self, attrs):
-        try:
-            ident_code = IdentificationCode.objects.get(user__phone=attrs['phone'], code=attrs['code'])
-        except IdentificationCode.DoesNotExist:
-            raise serializers.ValidationError({'Error': _("The code is invalid")})
-        code_lifetime = ident_code.time_created + timedelta(minutes=20)
-        if code_lifetime < now():
-            raise serializers.ValidationError({'Error': _("The code is expired")})
-        ident_code.active = False
-        ident_code.save()
-        return ident_code.user
-
-
 class CurrentUserSerializers(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('first_name', 'middle_name',  'last_name', 'email', 'phone', 'role', 'position', 'division')
+        fields = ('first_name', 'middle_name',  'last_name', 'email', 'phone', 'role', 'position', )
 

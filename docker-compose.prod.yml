@@ -4,7 +4,7 @@ x-variables: &variables
   SWAGGER_URL: ''
 
 services:
-  alan:
+  market:
     build:
       context: .
       dockerfile: docker/server_prod/Dockerfile
@@ -24,7 +24,7 @@ services:
       - static_data:/app/static/
       - redis_socket:/redis_socket
     networks:
-      - alan_network
+      - market_network
 
   db:
     image: postgres:13.2-alpine
@@ -37,7 +37,7 @@ services:
     ports:
       - "${DB_PORT}:5432"
     networks:
-      - alan_network
+      - market_network
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER" ]
       interval: 50s
@@ -57,7 +57,7 @@ services:
       - redis_data:/data
       - redis_socket:/redis_socket
     networks:
-      - alan_network
+      - market_network
     healthcheck:
       test: [ "CMD", "redis-cli","ping" ]
       interval: 1m20s
@@ -68,9 +68,9 @@ services:
     image: nginx
     restart: 'always'
     networks:
-      - alan_network
+      - market_network
     depends_on:
-      - alan
+      - market
     env_file:
       - .env
     ports:
@@ -98,11 +98,11 @@ services:
       - redis
     restart: unless-stopped
     networks:
-      - alan_network
+      - market_network
 
 
 networks:
-  alan_network:
+  market_network:
 
 volumes:
   postgres_data:

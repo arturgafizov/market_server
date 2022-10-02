@@ -21,8 +21,6 @@ urlpatterns = [
     path('login/', views.LoginView.as_view(), name='api-login'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
-    path('pre-login/mobile/', views.PreLoginMobileView.as_view(), name='pre_login_mobile'),
-    path('login/mobile/', views.LoginMobileView.as_view(), name='login_mobile'),
 
 ]
 

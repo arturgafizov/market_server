@@ -11,21 +11,17 @@ from .managers import UserManager
 
 class User(AbstractUser):
     ADMIN = 'admin'
-    DIRECTOR = 'director'
-    EMPLOYEE = 'employee'
+    ASSISTANT = 'assistant'
     ROLES = (
         (ADMIN, 'Админ'),
-        (DIRECTOR, 'Директор'),
-        (EMPLOYEE, 'Сотрудник'),
+        (ASSISTANT, 'ассистент'),
     )
 
     email = models.EmailField(_('Email address'), unique=True)
     phone = PhoneNumberField(unique=True, null=True, blank=True, verbose_name='Мобильный телефон')
-    role = models.CharField(max_length=128, choices=ROLES, default=EMPLOYEE, verbose_name='Роль')
+    role = models.CharField(max_length=128, choices=ROLES, default=ASSISTANT, verbose_name='Роль')
     middle_name = models.CharField(max_length=32, blank=True, null=True)
     position = models.CharField(max_length=128, null=True, blank=True, verbose_name='Должность')
-    division = models.CharField(max_length=128, null=True, blank=True, verbose_name='Подразделение')
-    photo = models.ImageField(upload_to='user_photo/', blank=True, verbose_name='Фото пользователя')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -35,6 +31,9 @@ class User(AbstractUser):
     class Meta:
         verbose_name = _('User')
         verbose_name_plural = _('Users')
+        permissions = (
+            ('assistant_access', 'Assistant'),
+        )
 
     def __str__(self):
         return self.email
