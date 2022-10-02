@@ -40,7 +40,7 @@ WORKDIR $APP_HOME
 
 COPY --from=builder /install /usr/local
 COPY --chown=$USER:$USER ./docker/server_prod/entrypoint.sh /
-COPY --chown=$USER:$USER ./app/alan/ $APP_HOME
+COPY --chown=$USER:$USER ./app/market/ $APP_HOME
 
 RUN chmod +x /*.sh && \
     mkdir -p static media  && \

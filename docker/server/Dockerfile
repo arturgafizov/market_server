@@ -18,7 +18,7 @@ COPY ./app/requirements ./app/requirements
 
 RUN pip install -r ./app/requirements/local.txt --no-cache-dir
 
-COPY ./app/alan /app
+COPY ./app/market /app
 
 
 EXPOSE 8000

@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  alan:
+  market:
     build:
       context: .
       dockerfile: docker/server/Dockerfile
@@ -16,12 +16,12 @@ services:
       - db
       - redis
     ports:
-      - '8001:8000'
+      - '8002:8000'
     volumes:
-      - ./app/alan:/app
+      - ./app/market:/app
       - redis_socket:/redis_socket
     networks:
-      - alan_network
+      - market_network
 
   db:
     image: postgres:13.2-alpine
@@ -32,9 +32,9 @@ services:
     env_file:
       - docker/postgres/env.env
     ports:
-      - "6437:5432"
+      - "6438:5432"
     networks:
-      - alan_network
+      - market_network
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER" ]
       interval: 50s
@@ -51,9 +51,9 @@ services:
       - redis_data:/data
       - redis_socket:/redis_socket
     ports:
-      - "6385:6379"
+      - "6386:6379"
     networks:
-      - alan_network
+      - market_network
     healthcheck:
       test: [ "CMD", "redis-cli","ping" ]
       interval: 1m20s
@@ -65,9 +65,9 @@ services:
       context: .
       dockerfile: docker/server/Dockerfile
     entrypoint: ''
-    command: celery -A source worker -l info --beat --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    command: celery -A source worker -l info --beat
     volumes:
-      - ./app/alan:/app
+      - ./app/market:/app
       - redis_socket:/redis_socket
     env_file:
       - docker/postgres/env.env
@@ -78,11 +78,11 @@ services:
       - redis
     restart: unless-stopped
     networks:
-      - alan_network
+      - market_network
 
 
 networks:
-  alan_network:
+  market_network:
 
 volumes:
   postgres_data:
